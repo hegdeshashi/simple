@@ -16,7 +16,8 @@ pipeline{
               stage('maven build'){
                   steps{
                       script{
-		    	                sh "mvn clean install"
+		    	                echo 'Hello, Maven'
+                			sh 'mvn --version'
                       	  }
                	     }  
                  }	
