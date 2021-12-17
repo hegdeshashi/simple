@@ -1,31 +1,41 @@
-#!/usr/bin/env groovy
+// Simple pipeline
+pipeline {
 
-@Library('shared-library@master') _ //master or whatever branch
+    agent none
 
-pipeline{
+    stages {
 
-      agent {
-                docker {
-                image 'maven:3-openjdk-11'
-                args '-v $HOME/.m2:/root/.m2'
+        // In Stage One add one value to the property and call a library step with it
+        stage('One') {
+            steps {
+                script {
+                    // Add a value to the property
+                    props.setProperty('PROP_1', 'VAL_1')
+
+                    // Call a custom library step with the properties containing 1 value
+                    doWithProperties(props)
+
+                    // Echo it
+                    echo "props = ${props.toString()}"
+                }
+
+            }
+        }
+
+        // In Stage Two add another value to the property and call a library step with it, it should have 2 values
+        stage('Two') {
+            steps {
+                script {
+                    // Add a value to the property
+                    props.setProperty('PROP_2', 'VAL_2')
+
+                    // Call a custom library step with the properties containing 2 values
+                    doWithProperties(props)
+
+                    // Echo it
+                    echo "props = ${props.toString()}"
                 }
             }
-        
-        stages{
-
-              stage('maven build'){
-                  steps{
-                      script{
-		    	                sh "mvn clean install"
-                      	  }
-               	     }  
-                 }	
-                 
-                 stage ('Check logs') {
-                    steps {
-                        filterLogs ('WARNING', 50)
-                    }
-                }
-		
-           }	       	     	         
+        }
+    }
 }
