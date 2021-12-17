@@ -2,27 +2,30 @@
 
 @Library('shared-library@master') _ //master or whatever branch
 
-pipeline {
-    agent none
-    stages {
-        stage('Example Build') {
-            agent { docker 'maven:3-alpine' }
-            steps {
-                echo 'Hello, Maven'
-                sh 'mvn --version'
+pipeline{
+
+      agent {
+                docker {
+                image 'maven:3-alpine'
+                args '-v $HOME/.m2:/root/.m2'
+                }
             }
-        }
-        stage('Example Test') {
-            agent { docker 'openjdk:8-jre' }
-            steps {
-                echo 'Hello, JDK'
-                sh 'java -version'
-            }
-        }
-        stage ('Check logs') {
+        
+        stages{
+
+              stage('maven build'){
+                  steps{
+                      script{
+		    	                sh "mvn clean install"
+                      	  }
+               	     }  
+                 }	
+                 
+                 stage ('Check logs') {
                     steps {
                         filterLogs ('WARNING', 50)
                     }
                 }
-    }
+		
+           }	       	     	         
 }
