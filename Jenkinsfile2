@@ -16,15 +16,14 @@ pipeline{
               stage('maven build'){
                   steps{
                       script{
-		    	                echo 'Hello, Maven'
-                			sh 'mvn --version'
+		    	                sh "mvn clean install"
                       	  }
                	     }  
                  }	
                  
                  stage ('Check logs') {
                     steps {
-                        filterLogs ('WARNING', 1)
+                        filterLogs ('WARNING', 50)
                     }
                 }
 		
