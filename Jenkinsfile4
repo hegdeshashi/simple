@@ -19,18 +19,17 @@ pipeline{
 		    	                sh "mvn clean install"
                       	  }
                	     }  
-		      post {
-			      always {
-			      junit '**/target/surfire-reports/TEST-*.xml'
-			      }
-		      }
-                 }	
+	      }	
                  
                  stage ('Check logs') {
                     steps {
                         filterLogs ('WARNING', 50)
                     }
                 }
-		
+		post {
+			      always {
+			      junit '**/target/surfire-reports/TEST-*.xml'
+			      }
+		      }
            }	       	     	         
 }
